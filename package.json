@@ -1,7 +1,7 @@
 {
   "name": "@nexssp/package",
   "description": "Package manager for the Nexss Programmer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://nexss.com",
   "main": "src/package.js",
   "bin": {

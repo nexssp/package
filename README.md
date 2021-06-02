@@ -2,7 +2,7 @@
 
 - Experimental - alpha stage
 
-Manage multiple packages (now only git)
+Manage multiple packages (now only git and only Nexss Programmer packages)
 
 ```sh
 nexss pkg add Blender --saveNexss # You can modify code from now in your folder and use it for your project.

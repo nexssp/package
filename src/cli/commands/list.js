@@ -1,99 +1,92 @@
-const fs = require('fs');
-// const dirTree = require("directory-tree");
-const { NEXSS_PACKAGES_PATH } = require('../../config/config');
+module.exports = (cmd, args) => {
+  const fs = require('fs')
+  // const dirTree = require("directory-tree");
+  const { NEXSS_PACKAGES_PATH } = require('../../config/packages-config')
 
-const packagesPath = `${NEXSS_PACKAGES_PATH}`;
+  const packagesPath = `${NEXSS_PACKAGES_PATH}`
 
-const authors = fs.readdirSync(packagesPath);
+  const authors = fs.readdirSync(packagesPath)
 
-let pkgs = [];
-// TODO: To fix below syntac - make more efficient! works for now
-authors.forEach((author) => {
-  if (
-    author !== '3rdPartyLibraries' &&
-    fs.statSync(`${packagesPath}/${author}`).isDirectory()
-  ) {
-    if (author.indexOf('@') === 0) {
-      fs.readdirSync(`${packagesPath}/${author}`).map((pkg) => {
-        if (!fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
-          if (fs.statSync(`${packagesPath}/${author}/${pkg}`).isDirectory()) {
-            fs.readdirSync(`${packagesPath}/${author}/${pkg}`).map(
-              (details) => {
-                pkgs.push({ type: 'pkg', path: `${author}/${pkg}/${details}` });
-              }
-            );
+  let pkgs = []
+  // TODO: To fix below syntac - make more efficient! works for now
+  authors.forEach((author) => {
+    if (author !== '3rdPartyLibraries' && fs.statSync(`${packagesPath}/${author}`).isDirectory()) {
+      if (author.indexOf('@') === 0) {
+        fs.readdirSync(`${packagesPath}/${author}`).map((pkg) => {
+          if (!fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
+            if (fs.statSync(`${packagesPath}/${author}/${pkg}`).isDirectory()) {
+              fs.readdirSync(`${packagesPath}/${author}/${pkg}`).map((details) => {
+                pkgs.push({ type: 'pkg', path: `${author}/${pkg}/${details}` })
+              })
+            } else {
+              pkgs.push({
+                type: 'file',
+                path: `${packagesPath}/${author}/${pkg}`,
+              })
+            }
           } else {
-            pkgs.push({
-              type: 'file',
-              path: `${packagesPath}/${author}/${pkg}`,
-            });
-          }
-        } else {
-          // 3rdPartyLibraries is a directory where nexss install additional libs.
-          if (pkg !== '3rdPartyLibraries') {
-            pkgs.push({
-              type: 'pkg',
-              path: `${author}/${pkg}`,
-            });
-          }
-        }
-      });
-    } else {
-      if (fs.existsSync(`${packagesPath}/${author}/_nexss.yml`)) {
-        if (author !== '3rdPartyLibraries') {
-          pkgs.push({
-            type: 'pkg',
-            path: `${author}`,
-          });
-        }
-      }
-      fs.readdirSync(`${packagesPath}/${author}`).map((pkg) => {
-        if (fs.statSync(`${packagesPath}/${author}/${pkg}`).isDirectory()) {
-          // console.log(`${packagesPath}/${author}/${pkg}/_nexss.yml`);
-          if (fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
+            // 3rdPartyLibraries is a directory where nexss install additional libs.
             if (pkg !== '3rdPartyLibraries') {
               pkgs.push({
                 type: 'pkg',
                 path: `${author}/${pkg}`,
-              });
+              })
             }
           }
+        })
+      } else {
+        if (fs.existsSync(`${packagesPath}/${author}/_nexss.yml`)) {
+          if (author !== '3rdPartyLibraries') {
+            pkgs.push({
+              type: 'pkg',
+              path: `${author}`,
+            })
+          }
         }
-      });
+        fs.readdirSync(`${packagesPath}/${author}`).map((pkg) => {
+          if (fs.statSync(`${packagesPath}/${author}/${pkg}`).isDirectory()) {
+            // console.log(`${packagesPath}/${author}/${pkg}/_nexss.yml`);
+            if (fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
+              if (pkg !== '3rdPartyLibraries') {
+                pkgs.push({
+                  type: 'pkg',
+                  path: `${author}/${pkg}`,
+                })
+              }
+            }
+          }
+        })
+      }
     }
-  }
-});
+  })
 
-if (pkgs.length > 0) {
-  if (cliArgs._.slice(6).length > 0) {
-    const options = {
-      // pre: "<",
-      // post: ">",
-      extract(el) {
-        return `${el.path} ${el.type}`;
-      },
-    };
-    const fuzzy = require('fuzzy');
-    const fuzzyResult = fuzzy.filter(
-      cliArgs._.slice(6).join(' '),
-      pkgs,
-      options
-    );
-    pkgs = fuzzyResult.map((el) => el.original);
-    // const pkgs = new FuzzySearch(pkgs, ["type", "path"], {
-    //   caseSensitive: false
-    // });
-  }
+  if (pkgs.length > 0) {
+    if (cliArgs._.slice(6).length > 0) {
+      const options = {
+        // pre: "<",
+        // post: ">",
+        extract(el) {
+          return `${el.path} ${el.type}`
+        },
+      }
+      const fuzzy = require('fuzzy')
+      const fuzzyResult = fuzzy.filter(cliArgs._.slice(6).join(' '), pkgs, options)
+      pkgs = fuzzyResult.map((el) => el.original)
+      // const pkgs = new FuzzySearch(pkgs, ["type", "path"], {
+      //   caseSensitive: false
+      // });
+    }
 
-  if (cliArgs.json) {
-    console.log(JSON.stringify(pkgs.flat()));
+    if (cliArgs.json) {
+      console.log(JSON.stringify(pkgs.flat()))
+    } else {
+      pkgs.forEach((e) => {
+        console.log(e)
+      })
+    }
   } else {
-    pkgs.forEach((e) => {
-      console.log(e);
-    });
+    console.warn(`No packages found at ${NEXSS_PACKAGES_PATH}`)
   }
-} else {
-  console.warn(`No packages found at ${NEXSS_PACKAGES_PATH}`);
 }
 
 // packages = packages || [];

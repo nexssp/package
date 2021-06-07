@@ -56,7 +56,7 @@
     "@nexssp/command": "^1.0.6",
     "@nexssp/config": "^1.0.7",
     "@nexssp/data": "^1.0.5",
-    "@nexssp/ensure": "^1.1.8",
+    "@nexssp/ensure": "^1.1.10",
     "@nexssp/extend": "^2.0.3",
     "@nexssp/logdebug": "^1.0.18",
     "@nexssp/os": "^2.0.17",

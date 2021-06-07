@@ -61,7 +61,7 @@ module.exports = (cmd, args) => {
   })
 
   if (pkgs.length > 0) {
-    if (cliArgs._.slice(6).length > 0) {
+    if (args.length > 0) {
       const options = {
         // pre: "<",
         // post: ">",
@@ -70,14 +70,14 @@ module.exports = (cmd, args) => {
         },
       }
       const fuzzy = require('fuzzy')
-      const fuzzyResult = fuzzy.filter(cliArgs._.slice(6).join(' '), pkgs, options)
+      const fuzzyResult = fuzzy.filter(args.join(' '), pkgs, options)
       pkgs = fuzzyResult.map((el) => el.original)
       // const pkgs = new FuzzySearch(pkgs, ["type", "path"], {
       //   caseSensitive: false
       // });
     }
 
-    if (cliArgs.json) {
+    if (args.includes('--json')) {
       console.log(JSON.stringify(pkgs.flat()))
     } else {
       pkgs.forEach((e) => {

@@ -1,5 +1,6 @@
 module.exports = (cmd, args) => {
   const { installPackages } = require('../../../lib/install')
+  const { yellow, blue, green, bold } = require('@nexssp/ansi')
 
   const packageToInstall = args[0]
 

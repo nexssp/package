@@ -15,7 +15,7 @@ nexss pkg install all # installs all packages
 ## Examples
 
 ```sh
-nexss pkg add Mouse/Move --x=10 --y=200
+nexss pkg add Mouse/Move --_x=10 --_y=200
 nexss pkg add Local/Folder
 nexss pkg add Keyboard --type="#d" --copyPackage --saveNexss  --forceNexss # --copyPackage to the current folder (you can modify)
 

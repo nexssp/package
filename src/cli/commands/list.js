@@ -60,6 +60,10 @@ module.exports = (cmd, args) => {
     }
   })
 
+  const json = args.includes('--json')
+  const { remove } = require('@nexssp/extend/array')
+  args = remove(args, '--json')
+
   if (pkgs.length > 0) {
     if (args.length > 0) {
       const options = {
@@ -77,7 +81,7 @@ module.exports = (cmd, args) => {
       // });
     }
 
-    if (args.includes('--json')) {
+    if (json) {
       console.log(JSON.stringify(pkgs.flat()))
     } else {
       pkgs.forEach((e) => {

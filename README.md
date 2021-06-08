@@ -20,3 +20,7 @@ nexss pkg add Local/Folder
 nexss pkg add Keyboard --type="#d" --copyPackage --saveNexss  --forceNexss # --copyPackage to the current folder (you can modify)
 
 ```
+
+## Multiplatform
+
+Nexss Programmer packages can have subfolders for differnet platform. `nexss pkg init` will ommit them if the platfrom does not match, so it will not run eg. Windows init commands on Linux machine etc.

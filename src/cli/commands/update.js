@@ -1,5 +1,7 @@
 module.exports = (cmd, args) => {
   const fs = require('fs')
+  const { bold, green } = require('@nexssp/ansi')
+  const { error } = require('@nexssp/logdebug')
   // const dirTree = require("directory-tree");
   const { NEXSS_PACKAGES_PATH } = require('../../config/packages-config')
 
@@ -16,6 +18,12 @@ module.exports = (cmd, args) => {
   // TODO: To fix below syntac - make more efficient! works for now
   // TODO: Make it DRY LATER - this is done jst to get it to work
   process.chdir(packagesPath)
+
+  // Remove @dev from updates.
+  const { remove } = require('@nexssp/extend/array')
+
+  remove(authors, '@dev')
+
   authors.forEach((author) => {
     if (author !== '3rdPartyLibraries' && fs.statSync(`${packagesPath}/${author}`).isDirectory()) {
       if (author.indexOf('@') === 0) {
@@ -23,27 +31,34 @@ module.exports = (cmd, args) => {
           if (!fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
             if (fs.statSync(`${packagesPath}/${author}/${pkg}`).isDirectory()) {
               fs.readdirSync(`${packagesPath}/${author}/${pkg}`).map((details) => {
-                console.log(`${bold(green('Update package'))}: ${packagesPath}/${author}/${pkg}`)
-                try {
-                  require('child_process').execSync(
-                    `git pull --rebase origin master`,
-                    spawnOptions({
-                      cwd: `${packagesPath}/${author}/${pkg}/${details}`,
-                      stdio: 'inherit',
-                    })
-                  )
-                  log.success(`Package update checked. ${packagesPath}/${author}/${pkg}/${details}`)
-                } catch (er) {
-                  // console.error(er);
-                  // process.exit();
-                  console.error(bold(`${packagesPath}/${author}/${pkg}/${details} not a git repo?`))
+                if (fs.statSync(`${packagesPath}/${author}/${pkg}/.git`).isDirectory()) {
+                  console.log(`${bold(green('Update package'))}: ${packagesPath}/${author}/${pkg}`)
+                  try {
+                    require('child_process').execSync(
+                      `git pull --rebase origin master`,
+                      spawnOptions({
+                        cwd: `${packagesPath}/${author}/${pkg}/${details}`,
+                        stdio: 'inherit',
+                      })
+                    )
+                    log.success(
+                      `Package update checked. ${packagesPath}/${author}/${pkg}/${details}`
+                    )
+                  } catch (er) {
+                    error(bold(er.message))
+                    console.error(
+                      bold(`${packagesPath}/${author}/${pkg}/${details} not a git repo?`)
+                    )
+                  }
+                } else {
+                  console.log('ooooooooooooooooooooo')
                 }
               })
             } else {
-              // pkgs.push({
-              //   type: "file",
-              //   path: `${packagesPath}/${author}/${pkg}`
-              // });
+              pkgs.push({
+                type: 'file',
+                path: `${packagesPath}/${author}/${pkg}`,
+              })
             }
           } else {
             // 3rdPartyLibraries is a directory where nexss install additional libs.
@@ -58,6 +73,7 @@ module.exports = (cmd, args) => {
                   })
                 )
               } catch (er) {
+                error(bold(er.message))
                 console.error(bold(`${packagesPath}/${author}/${pkg} not a git repo?`))
               }
             }
@@ -76,6 +92,7 @@ module.exports = (cmd, args) => {
                 })
               )
             } catch (er) {
+              error(bold(er.message))
               console.error(bold(`${packagesPath}/${author} not a git repo?`))
             }
           }
@@ -96,6 +113,7 @@ module.exports = (cmd, args) => {
                     })
                   )
                 } catch (er) {
+                  error(bold(er.message))
                   console.error(bold(`${packagesPath}/${author}/${pkg} not a git repo?`))
                 }
               }

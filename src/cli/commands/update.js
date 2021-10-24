@@ -1,4 +1,11 @@
 module.exports = (cmd, args) => {
+  const { ensureInstalled } = require('@nexssp/ensure')
+
+  // Make sure git is intalled
+  ensureInstalled('git', {
+    progress: process.argv.includes('--progress'),
+  })
+
   const fs = require('fs')
   const { bold, green } = require('@nexssp/ansi')
   const { error } = require('@nexssp/logdebug')
@@ -24,6 +31,24 @@ module.exports = (cmd, args) => {
 
   remove(authors, '@dev')
 
+  function upp(cwd) {
+    log.info(`CWD:. ${cwd}`)
+    try {
+      require('child_process').execSync(
+        `git pull --rebase origin master`,
+        spawnOptions({
+          cwd,
+          stdio: 'inherit',
+        })
+      )
+      log.success(`Package update checked. ${cwd}`)
+    } catch (er) {
+      // console.log(er)
+      error(bold(er.message))
+      console.error(bold(`${cwd} not a git repo?`))
+    }
+  }
+
   authors.forEach((author) => {
     if (author !== '3rdPartyLibraries' && fs.statSync(`${packagesPath}/${author}`).isDirectory()) {
       if (author.indexOf('@') === 0) {
@@ -33,23 +58,7 @@ module.exports = (cmd, args) => {
               fs.readdirSync(`${packagesPath}/${author}/${pkg}`).map((details) => {
                 if (fs.statSync(`${packagesPath}/${author}/${pkg}/.git`).isDirectory()) {
                   console.log(`${bold(green('Update package'))}: ${packagesPath}/${author}/${pkg}`)
-                  try {
-                    require('child_process').execSync(
-                      `git pull --rebase origin master`,
-                      spawnOptions({
-                        cwd: `${packagesPath}/${author}/${pkg}/${details}`,
-                        stdio: 'inherit',
-                      })
-                    )
-                    log.success(
-                      `Package update checked. ${packagesPath}/${author}/${pkg}/${details}`
-                    )
-                  } catch (er) {
-                    error(bold(er.message))
-                    console.error(
-                      bold(`${packagesPath}/${author}/${pkg}/${details} not a git repo?`)
-                    )
-                  }
+                  upp(`${packagesPath}/${author}/${pkg}/${details}`)
                 } else {
                   console.log('ooooooooooooooooooooo')
                 }
@@ -62,39 +71,32 @@ module.exports = (cmd, args) => {
             }
           } else {
             // 3rdPartyLibraries is a directory where nexss install additional libs.
+
             if (pkg !== '3rdPartyLibraries') {
               console.log(`${bold(green('Update package'))}: ${author}/${pkg}`)
-              try {
-                require('child_process').execSync(
-                  `git pull --rebase origin master`,
-                  spawnOptions({
-                    cwd: `${packagesPath}/${author}/${pkg}`,
-                    stdio: 'inherit',
-                  })
-                )
-              } catch (er) {
-                error(bold(er.message))
-                console.error(bold(`${packagesPath}/${author}/${pkg} not a git repo?`))
-              }
+
+              upp(`${packagesPath}/${author}/${pkg}`)
             }
           }
         })
       } else {
         if (fs.existsSync(`${packagesPath}/${author}/_nexss.yml`)) {
           if (author !== '3rdPartyLibraries') {
-            try {
-              console.log(`${bold(green('Update package'))}: ${author}`)
-              require('child_process').execSync(
-                `git pull --rebase origin master`,
-                spawnOptions({
-                  cwd: `${packagesPath}/${author}`,
-                  stdio: 'inherit',
-                })
-              )
-            } catch (er) {
-              error(bold(er.message))
-              console.error(bold(`${packagesPath}/${author} not a git repo?`))
-            }
+            upp(`${packagesPath}/${author}`)
+
+            // try {
+            //   console.log(`${bold(green('Update package'))}: ${author}`)
+            //   require('child_process').execSync(
+            //     `git pull --rebase origin master`,
+            //     spawnOptions({
+            //       cwd: `${packagesPath}/${author}`,
+            //       stdio: 'inherit',
+            //     })
+            //   )
+            // } catch (er) {
+            //   error(bold(er.message))
+            //   console.error(bold(`${packagesPath}/${author} not a git repo?`))
+            // }
           }
         }
         fs.readdirSync(`${packagesPath}/${author}`).map((pkg) => {
@@ -103,19 +105,7 @@ module.exports = (cmd, args) => {
             // console.log(`${packagesPath}/${author}/${pkg}/_nexss.yml`);
             if (fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
               if (pkg !== '3rdPartyLibraries') {
-                console.log(`${bold(green('Update package'))}: ${packagesPath}/${author}/${pkg}`)
-                try {
-                  require('child_process').execSync(
-                    `git pull --rebase origin master`,
-                    spawnOptions({
-                      cwd: `${packagesPath}/${author}/${pkg}`,
-                      stdio: 'inherit',
-                    })
-                  )
-                } catch (er) {
-                  error(bold(er.message))
-                  console.error(bold(`${packagesPath}/${author}/${pkg} not a git repo?`))
-                }
+                upp(path.join(packagesPath, author, pkg))
               }
             }
           }

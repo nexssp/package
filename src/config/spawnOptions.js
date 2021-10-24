@@ -1,4 +1,4 @@
-const { getShell } = require('@nexssp/os')
+const { getShell } = require('@nexssp/os/legacy')
 
 module.exports = (opts) => {
   const result = {}

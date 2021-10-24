@@ -124,9 +124,9 @@ module.exports = (cmd, args) => {
         console.log(e)
       })
     }
-  } else {
-    console.warn(`No packages found at ${NEXSS_PACKAGES_PATH}`)
   }
+
+  console.log('done.')
 
   // packages = packages || [];
   // packages.forEach(function(file) {

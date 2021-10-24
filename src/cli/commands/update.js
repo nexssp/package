@@ -1,5 +1,7 @@
 module.exports = (cmd, args) => {
+  // TODO: To rewrite the whole function. Now works, but can be done much better.
   const { ensureInstalled } = require('@nexssp/ensure')
+  const _log = require('@nexssp/logdebug')
 
   // Make sure git is intalled
   ensureInstalled('git', {
@@ -32,7 +34,7 @@ module.exports = (cmd, args) => {
   remove(authors, '@dev')
 
   function upp(cwd) {
-    log.info(`CWD:. ${cwd}`)
+    _log.info(`CWD:. ${cwd}`)
     try {
       require('child_process').execSync(
         `git pull --rebase origin master`,
@@ -41,7 +43,7 @@ module.exports = (cmd, args) => {
           stdio: 'inherit',
         })
       )
-      log.success(`Package update checked. ${cwd}`)
+      _log.success(`Package update checked. ${cwd}`)
     } catch (er) {
       // console.log(er)
       error(bold(er.message))
@@ -59,8 +61,6 @@ module.exports = (cmd, args) => {
                 if (fs.statSync(`${packagesPath}/${author}/${pkg}/.git`).isDirectory()) {
                   console.log(`${bold(green('Update package'))}: ${packagesPath}/${author}/${pkg}`)
                   upp(`${packagesPath}/${author}/${pkg}/${details}`)
-                } else {
-                  console.log('ooooooooooooooooooooo')
                 }
               })
             } else {
@@ -83,20 +83,6 @@ module.exports = (cmd, args) => {
         if (fs.existsSync(`${packagesPath}/${author}/_nexss.yml`)) {
           if (author !== '3rdPartyLibraries') {
             upp(`${packagesPath}/${author}`)
-
-            // try {
-            //   console.log(`${bold(green('Update package'))}: ${author}`)
-            //   require('child_process').execSync(
-            //     `git pull --rebase origin master`,
-            //     spawnOptions({
-            //       cwd: `${packagesPath}/${author}`,
-            //       stdio: 'inherit',
-            //     })
-            //   )
-            // } catch (er) {
-            //   error(bold(er.message))
-            //   console.error(bold(`${packagesPath}/${author} not a git repo?`))
-            // }
           }
         }
         fs.readdirSync(`${packagesPath}/${author}`).map((pkg) => {
@@ -105,7 +91,7 @@ module.exports = (cmd, args) => {
             // console.log(`${packagesPath}/${author}/${pkg}/_nexss.yml`);
             if (fs.existsSync(`${packagesPath}/${author}/${pkg}/_nexss.yml`)) {
               if (pkg !== '3rdPartyLibraries') {
-                upp(path.join(packagesPath, author, pkg))
+                upp(`${packagesPath}/${author}/${pkg}`)
               }
             }
           }

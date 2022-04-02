@@ -10,10 +10,8 @@ module.exports = (cmd, args) => {
 
   args = args.filter((e) => e != '--debug')
 
-  const { doOpAsync } = require('../../../lib/operations')
+  const { doOp } = require('../../../lib/operations')
 
   const packageSelected = args.shift()
-  doOpAsync('init', { packagesPath: NEXSS_PACKAGES_PATH }, packageSelected).catch((e) =>
-    console.error('There was an error:', e)
-  )
+  doOp('init', { packagesPath: NEXSS_PACKAGES_PATH }, packageSelected)
 }

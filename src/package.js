@@ -2,7 +2,7 @@
 /* eslint-disable space-before-function-paren, comma-dangle */
 
 /**
- * Copyright © 2018-2021 Nexss.com / Marcin Polak mapoart@gmail.com. All rights reserved.
+ * Copyright © 2018-2022 Nexss.com / Marcin Polak mapoart@gmail.com. All rights reserved.
  * This source code is governed by MIT license, please check LICENSE file.
  */
 

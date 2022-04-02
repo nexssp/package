@@ -14,7 +14,8 @@
     "aliases.json"
   ],
   "scripts": {
-    "test": "nexssp-test",
+    "test": "node tests/program.js",
+    "test2": "nexssp-test",
     "prepare2": "npm run nexss:build",
     "nexss:build": "npx @nexssp/min@1.0.6",
     "nexss:clean": ""
@@ -52,21 +53,21 @@
     }
   ],
   "dependencies": {
-    "@nexssp/ansi": "^1.1.2",
-    "@nexssp/command": "^1.0.14",
-    "@nexssp/config": "^1.0.7",
-    "@nexssp/data": "^1.0.6",
-    "@nexssp/ensure": "^1.1.19",
-    "@nexssp/extend": "^2.0.3",
-    "@nexssp/logdebug": "^1.0.18",
-    "@nexssp/os": "^2.0.18",
-    "@nexssp/plugin": "^1.0.5",
-    "@nexssp/system": "^1.1.6",
-    "fast-glob": "^3.2.7",
-    "fs-extra": "^10.0.0",
+    "@nexssp/ansi": "^1.1.5",
+    "@nexssp/command": "^1.0.18",
+    "@nexssp/config": "^1.0.9",
+    "@nexssp/data": "^1.0.8",
+    "@nexssp/ensure": "^1.1.22",
+    "@nexssp/extend": "^2.0.9",
+    "@nexssp/logdebug": "^1.0.20",
+    "@nexssp/os": "^2.0.25",
+    "@nexssp/plugin": "^1.0.9",
+    "@nexssp/system": "^1.1.9",
+    "fast-glob": "^3.2.11",
+    "fs-extra": "^10.0.1",
     "fuzzy": "^0.1.3"
   },
   "devDependencies": {
-    "@nexssp/test": "^1.1.3"
+    "@nexssp/test": "^1.1.15"
   }
 }

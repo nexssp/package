@@ -6,8 +6,11 @@ const repos = require('../src/config/nexssp-packages-repos.json')
 
 const package1 = nexssPackage({ packagesPath: NEXSS_PACKAGES_PATH, repos })
 
-const x = package1.install('Nexss')
-console.log(x)
+const x1 = package1.install('Id')
+console.log(x1)
 
-const x2 = package1.install('Output')
+const x2 = package1.install('Nexss')
 console.log(x2)
+
+const x3 = package1.install('Output')
+console.log(x3)

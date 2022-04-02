@@ -8,3 +8,6 @@ const package1 = nexssPackage({ packagesPath: NEXSS_PACKAGES_PATH, repos })
 
 const x = package1.install('Nexss')
 console.log(x)
+
+const x2 = package1.install('Output')
+console.log(x2)
